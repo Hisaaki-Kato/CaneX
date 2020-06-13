@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block customcss %}
+  <link rel='stylesheet' type="text/css" href="{% static 'css/main.css' %}">
+{% endblock customcss %}
+
+{% block header %}
+<table>
+  <tr>
+    <td>
+      <form action="{% url 'main' %}" method="post" class="form-inline">
+        {% csrf_token %}
+        <div class="check">
+          {% for site in sites %}
+            <input type="checkbox" id="box_{{site}}" value="{{site}}" name='site_settings'><span>{{site}}</span>
+          {% endfor %}
+        </div>
+        <div class="check">
+          {% for p_TNM in p_TNMs %}
+            <input type="checkbox" id="box_{{p_TNM}}" value="{{p_TNM}}" name='p_TNM_settings'><span>{{p_TNM}}</span>
+          {% endfor %}
+        </div>
+        <p><button type="submit" class="btn btn-light">create</button></p>
+      </form>
+    </td>
+    <td class="aa">
+      <a href="{% url 'main' %}"><button class="btn btn-light" id="btn-reload">page reload</button></a>
+    </td>
+    <td>
+      <a href="{% url 'upload' %}"><button class="btn btn-light" id="btn-upload">data upload</button></a>
+    </td>
+</tr>
+</table>
+{% endblock header %}
+
+{% block content %}
+<div class="box">
+  <div id="cy"></div>
+</div>
+{% endblock content %}
+
+
+{% block customjs %}
+<script src="http://cdn.bootcss.com/cytoscape/3.14.2/cytoscape.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    var elements = {
+      nodes:[
+        {% for sharp in count_list %}
+          {data: {id: '{{ sharp.0 }}', size: '{{ sharp.1 }}'}},
+        {% endfor %}
+      ],
+      edges:[
+        {% for node in node_list %}
+          {data: {source: '{{ node.0 }}', target: '{{ node.1 }}', relationship: '{{ node.2 }}' }},
+        {% endfor %}
+      ],
+    };
+  
+    var layout = {
+      name: 'random',
+    };
+  
+    var style = [
+      { 
+        selector: 'node', 
+        css: {
+          'background-color': 'rgb(48, 48, 48)',  //node color
+          'opacity': '0.9',
+          'color': '#fff',             //text color
+          'text-outline-color': 'rgb(48, 48, 48)',
+          'text-outline-width': '5px',
+          'content': 'data(id)',
+          'width': 'data(size)',
+          'height': 'data(size)',
+          'font-size': '60px',
+          'text-halign': 'center',
+          'text-valign': 'center'
+        }
+      },
+      {
+        selector: 'edge',
+        css: {
+          'line-color': 'rgb(58, 225, 255)',
+          'width': 'data(relationship)',
+          'opacity': '0.5',
+          'curve-style': 'bezier',
+        }
+      }
+    ]
+  
+    var cy = window.cy = cytoscape({ 
+      container: $("#cy").get(0),
+      elements: elements,
+      layout: layout,
+      style: style,
+    });
+
+    cy.ready( function(){
+      cy.layout({
+        name: 'random',
+        animate: 'end',
+        animationDuration: 2500,
+        animationEasing: 'spring(500, 40)',
+        nodeOverlap: 1000,
+        avoidOverlap: true,
+        spacingFactor: 1.2,
+        edgeElasticity: function( edge ){ return 100000; },
+      }).run();
+    } );
+
+    cy.on('tap', 'node', function(evt) {
+      var tgt = evt.target;
+      var edge = evt.target.connectedEdges();
+
+      cy.nodes().style('background-color', 'rgb(48, 48, 48)');
+      cy.edges().style('line-color', 'rgb(58, 225, 255)');
+      cy.edges().style('z-index', '0');
+
+      tgt.css('background-color', '#rgb(255, 126, 51)');
+      edge.style('line-color', 'rgb(255, 126, 51)');
+      edge.style('z-index', '999');
+
+      cy.layout({
+        name: 'concentric',
+        animate: 'end',
+        animationDuration: 2500,
+        animationEasing: 'spring(500, 40)',
+        concentric: function( node ){
+          var degree = node.degree()
+          if (node == tgt) {
+            degree *= 2;
+          };
+          return degree;
+        },
+      }).run();
+    });
+  });
+
+</script>
+{% endblock customjs %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block customcss %}
+<link rel='stylesheet' href='http://cdn.rawgit.com/JeremyFagis/dropify/master/dist/css/dropify.css' /> 
+{% endblock customcss %}
+
+{% block content %}
+<p>.csvファイルをインプットしてください。</p>
+
+<div>
+  <div class="file-upload">
+    <div class="jumbotron">
+      {% if is_patient %}
+        <div class="alert alert-danger">
+          <p>ALERT: .csvファイルがすでに登録されています。</p>
+          <a href="{% url 'delete' %}" class="btn btn-light">データを削除する</a>
+        </div>
+      {% else %}
+        <form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="file" class="dropif" data-default-file="ファイルを選択してください" name="patient_csv">
+          <button type="submit" class="btn btn-success" name="button">UPLOAD</button>
+        </form>
+      {% endif %}
+      <div class="ReturnGeneral">
+        <a href="{% url 'main' %}" class="btn btn-light">メインページに戻る</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if text != None %}
+  <P class="alert alert-success">{{ text }}</P>
+{% endif %}
+
+{% endblock content %}
+
+{% block customjs %}
+<script src='http://cdn.rawgit.com/JeremyFagis/dropify/master/dist/js/dropify.js'></script>
+{% endblock customjs %}

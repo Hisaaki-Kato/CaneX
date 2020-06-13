@@ -1,0 +1,41 @@
+form {
+  height: 40px;
+}
+form p {
+  margin: 0;
+}
+
+p { 
+  color: rgb(0, 0, 0);
+}
+
+
+.check {
+  background-color: rgb(136, 136, 136);
+  border-radius: 10px;
+  padding: 5px 15px;
+  margin: 0 10px;
+}
+
+#btn-reload, #btn-upload {
+  margin: 0 0 0 50px
+}
+
+span {
+  color: white;
+}
+
+#cy {
+  height: 1000px;
+  width: 100%;
+  background-color: #fff;
+}
+
+canvas {
+  text-align: center;
+  width: 100%;
+}
+
+body {
+  background-color: #fff ;
+}

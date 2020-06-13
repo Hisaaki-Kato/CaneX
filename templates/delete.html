@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+{% endblock header %}
+
+{% block content %}
+<di class="model-delete">
+  <form action="{% url 'delete' %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="データを消去する" class="btn btn-danger">
+  </form>
+</di>
+
+<div class="DeleteMessage">
+  {% if not delete == None %}
+  <P class="alert alert-success">{{ delete }}</P>
+  {% endif %}
+</div>
+
+<a href="{% url 'upload' %}" id="ReturnUploadBtn" class="btn btn-light">アップロードページに戻る</a>
+
+{% endblock content %}
