@@ -40,7 +40,7 @@ def mainfunc(request):
     for i in itertools.permutations(sharps, r=2):
         vec1 = [int(num1) for num1 in i[0].vectors]
         vec2 = [int(num2) for num2 in i[1].vectors]
-        dot = (np.dot(np.array(vec1)[ids], np.array(vec2)[ids]))/2
+        dot = (np.dot(np.array(vec1)[ids], np.array(vec2)[ids]))
         dot_list = [i[0].name, i[1].name, dot]
         node_list.append(dot_list)
 

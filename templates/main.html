@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load be_half %}
 
 {% block customcss %}
   <link rel='stylesheet' type="text/css" href="{% static 'css/main.css' %}">
@@ -9,6 +9,11 @@
 {% block header %}
 <table>
   <tr>
+    <td>
+      <div class="check">
+        <input type="checkbox" id="show-legend" value="legend"><span>legends</span>
+      </div>
+    </td>
     <td>
       <form action="{% url 'main' %}" method="post" class="form-inline">
         {% csrf_token %}
@@ -62,7 +67,7 @@
       ],
       edges:[
         {% for node in node_list %}
-          {data: {source: '{{ node.0 }}', target: '{{ node.1 }}', relationship: '{{ node.2 }}' }},
+          {data: {source: '{{ node.0 }}', target: '{{ node.1 }}', relationship: '{{ node.2 }}', width: '{{ node.2 | be_half }}' }},
         {% endfor %}
       ],
     };
@@ -81,16 +86,21 @@
           'height': 'data(size)',
           'font-size': '20px',
           'text-halign': 'center',
-
         }
       },
       {
         selector: 'edge',
         css: {
           'line-color': 'rgb(58, 225, 255)',
-          'width': 'data(relationship)',
+          'width': 'data(width)',
           'opacity': '0.5',
           'curve-style': 'straight',
+          'label': 'data(relationship)',
+          'color': '#fff',             //text color
+          'text-outline-color': 'rgb(48, 48, 48)',
+          'text-outline-width': '3px',
+          'font-size': '0',
+          'text-opacity': '0.8',
         }
       }
     ]
@@ -107,7 +117,6 @@
         animate: 'end',
         animationDuration: 2500,
         animationEasing: 'spring(500, 40)',
-
       }).run();
     } );
 
@@ -117,10 +126,13 @@
 
       cy.nodes().style({
         'background-color': 'rgb(48, 48, 48)',
+        'opacity': '0.9',
         });
       cy.edges().style({
         'line-color': 'rgb(58, 225, 255)',
         'z-index': '0',
+        'color': '#fff',
+        'text-opacity': '0.5',  
       });
 
       tgt.style({
@@ -129,6 +141,8 @@
       edge.style({
         'line-color': 'rgb(255, 126, 51)',
         'z-index': '999',
+        'color': 'rgb(255, 126, 51)',
+        'text-opacity': '1',
       });
 
       cy.layout({
@@ -147,7 +161,21 @@
         },
       }).run();
     });
+    
+    //legends
+    $('#show-legend').change(function() {
+      if ($(this).is(':checked')) {
+        cy.edges().style({
+          'font-size': '20px',
+          });
+      } else {
+        cy.edges().style({
+          'font-size': '0',
+          });
+      };
+    });
   });
+
 
 </script>
 {% endblock customjs %}
