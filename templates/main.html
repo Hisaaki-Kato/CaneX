@@ -14,18 +14,26 @@
         {% csrf_token %}
         <div class="check">
           {% for site in sites %}
-            <input type="checkbox" id="box_{{site}}" value="{{site}}" name='site_settings'><span>{{site}}</span>
+            {% if site in site_names %}
+              <input type="checkbox" id="box_{{site}}" value="{{site}}" name='site_settings' checked><span>{{site}}</span>
+            {% else %}
+              <input type="checkbox" id="box_{{site}}" value="{{site}}" name='site_settings'><span>{{site}}</span>
+            {% endif %}
           {% endfor %}
         </div>
         <div class="check">
           {% for p_TNM in p_TNMs %}
-            <input type="checkbox" id="box_{{p_TNM}}" value="{{p_TNM}}" name='p_TNM_settings'><span>{{p_TNM}}</span>
+            {% if p_TNM in p_TNM_names %}
+              <input type="checkbox" id="box_{{p_TNM}}" value="{{p_TNM}}" name='p_TNM_settings' checked><span>{{p_TNM}}</span>
+            {% else %}
+              <input type="checkbox" id="box_{{p_TNM}}" value="{{p_TNM}}" name='p_TNM_settings'><span>{{p_TNM}}</span>
+            {% endif %}
           {% endfor %}
         </div>
         <p><button type="submit" class="btn btn-light">create</button></p>
       </form>
     </td>
-    <td class="aa">
+    <td>
       <a href="{% url 'main' %}"><button class="btn btn-light" id="btn-reload">page reload</button></a>
     </td>
     <td>
@@ -112,6 +120,7 @@
     } );
 
     cy.on('tap', 'node', function(evt) {
+      alert(cy.nodes().length)
       var tgt = evt.target;
       var edge = evt.target.connectedEdges();
 

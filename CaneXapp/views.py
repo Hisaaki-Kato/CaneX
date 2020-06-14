@@ -10,12 +10,11 @@ from io import TextIOWrapper, StringIO
 def mainfunc(request):
     patients = Patient.objects.all()
 
-    setting_list = []
-    sites = set([patient.site for patient in patients])
-    p_TNMs = set([patient.p_TNM for patient in patients])
+    sites = sorted(set([patient.site for patient in patients]))
+    p_TNMs = sorted(set([patient.p_TNM for patient in patients]))
 
-    site_names = []
-    p_TNM_names = []
+    site_names = sites
+    p_TNM_names = p_TNMs
 
     if request.method == 'POST':
         
@@ -30,10 +29,9 @@ def mainfunc(request):
     else:
         patients = Patient.objects.all()
 
-    setting_names = site_names + p_TNM_names
-
     ids = []
     for patient in patients:
+        # print(patient.site)
         ids.append(patient.number-1)
 
     sharps = Sharp.objects.all()
@@ -56,7 +54,8 @@ def mainfunc(request):
                                          'p_TNMs': p_TNMs,
                                          'count_list': count_list, 
                                          'node_list': node_list,
-                                         'setting_names': setting_names})
+                                         'site_names': site_names,
+                                         'p_TNM_names': p_TNM_names})
 
 
 def uploadfunc(request):
