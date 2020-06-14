@@ -22,8 +22,7 @@ def mainfunc(request):
             patients = Patient.objects.filter(Q(site__in=site_names) & Q(p_TNM__in=p_TNM_names))
         else:
             return render(request, 'main.html', {'sites': sites,
-                                         'p_TNMs': p_TNMs,
-                                         'count_list': count_list, })
+                                                 'p_TNMs': p_TNMs})
 
     else:
         site_names = sites
