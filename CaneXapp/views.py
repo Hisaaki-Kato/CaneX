@@ -14,16 +14,16 @@ def mainfunc(request):
     p_TNMs = sorted(set([patient.p_TNM for patient in patients]))
 
     if request.method == 'POST':
-        site_names = []
-        p_TNM_names = []
-        
-        params = dict(request.POST)
-        if 'site_settings' in request.POST:
-            site_names = params['site_settings']
-        if 'p_TNM_settings' in request.POST:
-            p_TNM_names = params['p_TNM_settings']
 
-        patients = Patient.objects.filter(Q(site__in=site_names) & Q(p_TNM__in=p_TNM_names))
+        params = dict(request.POST)
+        if ('site_settings' in request.POST) & ('p_TNM_settings' in request.POST):
+            site_names = params['site_settings']
+            p_TNM_names = params['p_TNM_settings']
+            patients = Patient.objects.filter(Q(site__in=site_names) & Q(p_TNM__in=p_TNM_names))
+        else:
+            return render(request, 'main.html', {'sites': sites,
+                                         'p_TNMs': p_TNMs,
+                                         'count_list': count_list, })
 
     else:
         site_names = sites
