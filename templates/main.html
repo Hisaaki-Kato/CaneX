@@ -67,10 +67,6 @@
       ],
     };
   
-    var layout = {
-      name: 'random',
-    };
-  
     var style = [
       { 
         selector: 'node', 
@@ -79,13 +75,13 @@
           'opacity': '0.9',
           'color': '#fff',             //text color
           'text-outline-color': 'rgb(48, 48, 48)',
-          'text-outline-width': '5px',
+          'text-outline-width': '3px',
           'content': 'data(id)',
           'width': 'data(size)',
           'height': 'data(size)',
-          'font-size': '60px',
+          'font-size': '20px',
           'text-halign': 'center',
-          'text-valign': 'center'
+
         }
       },
       {
@@ -102,7 +98,6 @@
     var cy = window.cy = cytoscape({ 
       container: $("#cy").get(0),
       elements: elements,
-      layout: layout,
       style: style,
     });
 
@@ -112,35 +107,41 @@
         animate: 'end',
         animationDuration: 2500,
         animationEasing: 'spring(500, 40)',
-        nodeOverlap: 1000,
-        avoidOverlap: true,
-        spacingFactor: 1.2,
-        edgeElasticity: function( edge ){ return 100000; },
+
       }).run();
     } );
 
     cy.on('tap', 'node', function(evt) {
-      alert(cy.nodes().length)
       var tgt = evt.target;
       var edge = evt.target.connectedEdges();
 
-      cy.nodes().style('background-color', 'rgb(48, 48, 48)');
-      cy.edges().style('line-color', 'rgb(58, 225, 255)');
-      cy.edges().style('z-index', '0');
+      cy.nodes().style({
+        'background-color': 'rgb(48, 48, 48)',
+        });
+      cy.edges().style({
+        'line-color': 'rgb(58, 225, 255)',
+        'z-index': '0',
+      });
 
-      tgt.css('background-color', '#rgb(255, 126, 51)');
-      edge.style('line-color', 'rgb(255, 126, 51)');
-      edge.style('z-index', '999');
+      tgt.style({
+        'opacity': '1',
+      });
+      edge.style({
+        'line-color': 'rgb(255, 126, 51)',
+        'z-index': '999',
+      });
 
       cy.layout({
         name: 'concentric',
         animate: 'end',
         animationDuration: 2500,
         animationEasing: 'spring(500, 40)',
+        spacingFactor: 1.5,
         concentric: function( node ){
-          var degree = node.degree()
+          var degree = node.degree();
+          degree = 0;
           if (node == tgt) {
-            degree *= 2;
+            degree += 10;
           };
           return degree;
         },
