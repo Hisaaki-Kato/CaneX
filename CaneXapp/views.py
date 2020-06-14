@@ -13,10 +13,9 @@ def mainfunc(request):
     sites = sorted(set([patient.site for patient in patients]))
     p_TNMs = sorted(set([patient.p_TNM for patient in patients]))
 
-    site_names = sites
-    p_TNM_names = p_TNMs
-
     if request.method == 'POST':
+        site_names = []
+        p_TNM_names = []
         
         params = dict(request.POST)
         if 'site_settings' in request.POST:
@@ -27,11 +26,11 @@ def mainfunc(request):
         patients = Patient.objects.filter(Q(site__in=site_names) & Q(p_TNM__in=p_TNM_names))
 
     else:
-        patients = Patient.objects.all()
+        site_names = sites
+        p_TNM_names = p_TNMs
 
     ids = []
     for patient in patients:
-        # print(patient.site)
         ids.append(patient.number-1)
 
     sharps = Sharp.objects.all()
