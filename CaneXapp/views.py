@@ -49,6 +49,9 @@ def mainfunc(request):
         vec = [int(num) for num in n.vectors]
         count = sum(np.array(vec)[ids])
         count_list.append([n.name, count])
+    count_list = np.array(count_list)
+    counts = (count_list[:,1]).astype(float)
+    count_list[:,1] = counts/(counts.max()/100)
 
     return render(request, 'main.html', {'sites': sites,
                                          'p_TNMs': p_TNMs,
