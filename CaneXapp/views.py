@@ -8,13 +8,11 @@ from io import TextIOWrapper, StringIO
 
 
 def mainfunc(request):
-    patients = Patient.objects.all()
 
-    sites = sorted(set([patient.site for patient in patients]))
-    p_TNMs = sorted(set([patient.p_TNM for patient in patients]))
+    sites = sorted(set(Patient.objects.values_list('site', flat=True)))
+    p_TNMs = sorted(set(Patient.objects.values_list('p_TNM', flat=True)))
 
     if request.method == 'POST':
-
         params = dict(request.POST)
         if ('site_settings' in request.POST) & ('p_TNM_settings' in request.POST):
             site_names = params['site_settings']
@@ -25,31 +23,29 @@ def mainfunc(request):
                                                  'p_TNMs': p_TNMs})
 
     else:
+        patients = Patient.objects.all()
         site_names = sites
         p_TNM_names = p_TNMs
 
-    ids = []
-    for patient in patients:
-        ids.append(patient.number-1)
+    patient_ids = patients.values_list('number', flat=True)
 
-    sharps = Sharp.objects.all()
+    sharp_names = Sharp.objects.values_list('name', flat=True)
+    sharp_num = len(sharp_names)
+    
+    vec_txt = Sharp.objects.values_list('vectors', flat=True)
+    vectors = np.array([[int(t) for t in txt] for txt in vec_txt])[:,patient_ids]
 
     node_list = []
-    for i in itertools.permutations(sharps, r=2):
-        vec1 = [int(num1) for num1 in i[0].vectors]
-        vec2 = [int(num2) for num2 in i[1].vectors]
-        dot = (np.dot(np.array(vec1)[ids], np.array(vec2)[ids]))
-        dot_list = [i[0].name, i[1].name, dot]
+    for i in itertools.permutations(range(sharp_num), r=2):
+        dot = (np.dot(vectors[i[0]], vectors[i[1]]))
+        dot_list = [sharp_names[i[0]], sharp_names[i[1]], dot]
         node_list.append(dot_list)
 
+    max_count = max(np.sum(vectors, axis=1))
     count_list = []
-    for n in sharps:
-        vec = [int(num) for num in n.vectors]
-        count = sum(np.array(vec)[ids])
-        count_list.append([n.name, count])
-    count_list = np.array(count_list)
-    counts = (count_list[:,1]).astype(float)
-    count_list[:,1] = counts/(counts.max()/100)
+    for n in range(sharp_num):
+        count = sum(vectors[n])/(max_count/100)
+        count_list.append([sharp_names[n], count])
 
     return render(request, 'main.html', {'sites': sites,
                                          'p_TNMs': p_TNMs,
