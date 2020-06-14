@@ -86,7 +86,7 @@
           'line-color': 'rgb(58, 225, 255)',
           'width': 'data(relationship)',
           'opacity': '0.5',
-          'curve-style': 'bezier',
+          'curve-style': 'straight',
         }
       }
     ]
@@ -100,7 +100,7 @@
 
     cy.ready( function(){
       cy.layout({
-        name: 'random',
+        name: 'circle',
         animate: 'end',
         animationDuration: 2500,
         animationEasing: 'spring(500, 40)',
