@@ -71,7 +71,11 @@
         {% endfor %}
       ],
     };
-  
+    
+    var layout = {
+      name: 'random',
+    }
+
     var style = [
       { 
         selector: 'node', 
@@ -109,6 +113,7 @@
       container: $("#cy").get(0),
       elements: elements,
       style: style,
+      layout: layout,
     });
 
     cy.ready( function(){
