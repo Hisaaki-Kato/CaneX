@@ -41,7 +41,7 @@ def mainfunc(request):
         dot_list = [sharp_names[i[0]], sharp_names[i[1]], dot]
         node_list.append(dot_list)
 
-    max_count = max(np.sum(vectors, axis=1))
+    max_count = max(np.sum(vectors, axis=1))+1
     count_list = []
     for n in range(sharp_num):
         count = sum(vectors[n])/(max_count/100)
