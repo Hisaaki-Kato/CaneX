@@ -1,71 +1,76 @@
 
 # CaneX
 
-# Requirement
+This is the web application to visualize a network between vectors.
+
+## sample gif
+![demo](https://raw.github.com/wiki/Hisaaki-Kato/CaneX/images/screenshot.gif)
+
+## Description
+This application visualizes the Co-occurrence between various vector representations of data. Co-occurrence is determined by calculating the inner product between vectors.
+
+## Features and technical topics
+
+* framework - django
+
+* database - MySQL
+
+* inner-product - numpy
+
+* network visualize - Cytoscape.js
+
+* file upload and delete
+
+## Requirement
 * python 3.6.9
 * MySQL 14.14
 
 ### pip libraries
+
 * Django 3.0.4
 * django-mysql 3.5.0
 * mysqlclient 1.4.6
 * numpy 1.18.2
 * pandas 1.0.3
 
-# Usage
-## MySQL
+## Setup
 
-MySQLを起動し、シェルに移動します。
+### Create db with MySQL
 
-```bash
-sudo service mysql start
->> * Starting MySQL database server mysqld 
-
-sudo mysql -u root -p
+In your MySQL shell, create database named 'canex'.
+```sql
+mysql> create database canex;
+mysql> use canex;
 ```
-パスワードを求められますが、初回はEnterを押せば入れます。
 
-mysql内でrootユーザーのパスワードを設定し、databaseを作成してください。
+## Usage
 
+1. Clone this repository, and move to application directory.
 ```bash
-mysql>update mysql.user set password=password('root用の任意パスワード') where user = 'root';
-mysql>create database canex;
+$ git clone git@github.com:Hisaaki-Kato/CaneX.git
+$ cd CaneX
 ```
-databaseが作成されたことを確認し、退出します。
+
+2. Move to CaneXproject directory, and create ```local_settings.py```.
 ```bash
-mysql> show databases;
-+--------------------+
-| Database           |
-+--------------------+
-| information_schema |
-| canex '←作成された' |
-| mysql              |
-| performance_schema |
-| sys                |
-+--------------------+
-mysql>exit
+$ cd CaneX/CaneXproject
+$ touch local_settings.py
 ```
-## local_settings.py
-projectのフォルダに移動し、local_settings.pyを作成します。
-```bash
-cd /CaneX/CaneXproject
-touch local_settings.py
-```
-local_settings.py中身
+The contents of local_settings.py are bellow.
 ```python
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = '(h!gd7cd=w-wqya1s%9u@b!kg(n+h*8uivj#l#lh*%pu@aj-xw'
+SECRET_KEY = 'Canex_secret_key'
 DEBUG = True
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'canex',
-        'USER': 'root',
-        'PASSWORD': 'root用の任意パスワード',
+        'USER': '---- your mysql user name ----',
+        'PASSWORD': '---- your mysql password ----',
     }
 }
 
@@ -74,22 +79,17 @@ STATICFILES_DIRS = [
 ]
 ```
 
-## db migration
-manage.pyが存在するフォルダに移動し、下記を実行してください。
+3. Move to the directory where ```manage.py``` exists, and excute db migration.
 ```bash
-python manage.py makemigrations
-python manage.py migrate
+$ cd CaneX/
+$ python manage.py makemigrations
+$ python manage.py migrate
 ```
 
-## runserver
-下記を実行し、サーバーが立ち上がれば終了です。
+4. Excute runserver, and access to localhost.
 ```bash
-python manage.py runserver
+$ python manage.py runserver
 ```
-
-# Note
-local_settings.py内のSECRET_KEYは流出するとまずいので、リポジトリをパブリックにはしないでください。
 
 # Author
-
-*[@Hisaaki-Kato](https://github.com/Hisaaki-Kato)
+Hisaaki-Kato
