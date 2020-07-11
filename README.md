@@ -23,7 +23,7 @@ This application visualizes the Co-occurrence between various vector representat
 
 ## Requirement
 * python 3.6.9
-* MySQL 14.14
+* MySQL 5.7
 
 ### pip libraries
 
